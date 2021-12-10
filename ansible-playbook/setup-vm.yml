@@ -1,4 +1,5 @@
+---
 - hosts: virtualmachines 
-roles: 
-   - {role: vm-setup} 
+  roles: 
+   #- {role: vm-setup} 
    - {role: container-setup} 

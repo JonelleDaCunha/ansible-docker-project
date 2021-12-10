@@ -34,4 +34,4 @@
      build:
       path: /root/todo-app
       source: build
-    state: present
+     state: present
