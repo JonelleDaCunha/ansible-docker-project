@@ -1,0 +1,47 @@
+---
+# tasks file for common
+- name: Check if package is installed
+  package_facts:
+    manager: "auto"
+
+- name: Install required system packages / install a few prerequisite packages which let apt use packages over HTTPS
+  apt: 
+    name: "{{ item }}"
+    state: latest 
+    update_cache: yes
+  when: "item|string not in ansible_facts.packages"
+  loop: 
+    - 'apt-transport-https'
+    - 'ca-certificates'
+    - 'curl'
+    - 'software-properties-common'
+    - 'python3-pip'
+    - 'python-is-python3'
+    - 'python3-setuptools'
+    - 'python3-docker'
+    - 'docker-compose'
+
+- name: Update apt-get repo and cache
+  apt: 
+    update_cache: yes 
+    force_apt_get: yes 
+    cache_valid_time: 3600
+
+- name: add the GPG key for the official Docker repository to your system
+  apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+- name: Add the Docker repository to APT sources
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name=docker-ce state=latest
+
+- name: Install Docker 
+  apt:
+    name: docker-ce
+    state: present
+  when: "'docker-ce' not in ansible_facts.packages"

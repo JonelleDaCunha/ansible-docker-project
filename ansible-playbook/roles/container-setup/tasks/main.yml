@@ -1,19 +1,5 @@
 ---
 # tasks file for container-setup
-- name: setup mysql container
-  docker_container:
-    image: mysql:5.7
-    name: mysqldb
-    state: started
-    restart: unless- stopped
-    env:
-      - MYSQL_ROOT_PASSWORD: "root"
-      - MYSQL_DATABASE: "todos_db"
-    ports:
-      - "3306:3306"
-    volumes:
-      - "db:/var/lib/mysql"
- 
 - name: create build directory
   file:
     path: /root/todo-app
@@ -21,17 +7,130 @@
     owner: root
     group: root
     mode: '0755'
+
 - name: copy Dockerfile
   copy:
-    src: /home/scrapbook/tutorial/todo-app
-    dest: /root/todo-app
+    src: /home/smartshore/Documents/ansible-docker-project/todo-app/
+    dest: /root/todo-app/
     owner: root
     group: root
     mode: '0644'
-- name: build container image
-  docker_image:
-     name: todo-app:v1.0
-     build:
-      path: /root/todo-app
-      source: build
-     state: present
+
+- name: Tear down existing services
+  community.docker.docker_compose:
+    project_src: /root/todo-app
+    state: absent
+
+- name: Create and start services
+  community.docker.docker_compose:
+    project_src: /root/todo-app
+  register: output
+
+- ansible.builtin.debug:
+    var: output
+
+
+
+
+
+
+
+
+
+
+# - name: create init sql directory
+#   file:
+#     path: /root/db-init
+#     state: directory
+#     owner: root
+#     group: root
+#     mode: '0755'
+
+# - name: Copy file with owner and permissions
+#   copy:
+#     src: /home/smartshore/Documents/ansible-docker-project/todo-app/app/db/schema.sql
+#     dest: ./db-init/schema.sql
+
+# - name: setup mysql container
+#   docker_container:
+#     image: mysql:5.7
+#     name: mysqldb
+#     state: started
+#     restart: no
+#     env:
+#       MYSQL_ROOT_PASSWORD: "root"
+#       MYSQL_DATABASE: "todos_db"
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - "/db:/var/lib/mysql:rw"
+#       - "/db-init:/docker-entrypoint-initdb.d:rw"
+
+
+
+
+# - name: Sleep for 10 seconds and continue with play
+#   wait_for:
+#     timeout: 30
+
+# - name: setup todo-app container
+#   docker_container:
+#     image: jonelledacunha/todo-app:v6
+#     name: todo-app
+#     state: started
+#     restart: no
+#     env:
+#       DB_HOST: mysqldb
+#       DB_USER: root
+#       DB_PASSWORD: root
+#       DB_NAME: todos_db
+#       DB_PORT: "3306"
+#     ports:
+#       - "3000:3000"
+#     volumes:
+#       - "db:/var/lib/mysql"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+# - name: create build directory
+#   file:
+#     path: /root/todo-app
+#     state: directory
+#     owner: root
+#     group: root
+#     mode: '0755'
+
+# - name: copy Dockerfile
+#   copy:
+#     src: /home/smartshore/Documents/ansible-docker-project/todo-app
+#     dest: /root/todo-app
+#     owner: root
+#     group: root
+#     mode: '0644'
+    
+# - name: build container image
+#   docker_image:
+#      name: todo-app:v1.0
+#      build:
+#       path: /root/todo-app
+#       source: build
+#      state: present

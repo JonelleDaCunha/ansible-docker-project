@@ -6,11 +6,11 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=todos_db
-    ports:
-      - 3306:3306
+    # ports:
+    #   - 3306:3306
     volumes:
-      - db:/var/lib/mysql
-      - ./app/db:/docker-entrypoint-initdb.d
+      - db:/var/lib/mysql:rw
+      - ./app/db:/docker-entrypoint-initdb.d:rw
   app:
     depends_on:
       - mysqldb
@@ -25,6 +25,17 @@ services:
       - DB_PORT=3306
     stdin_open: true
     tty: true
+  
+  # reverse-proxy:
+  #   container_name: reverse
+  #   hostname: reverse
+  #   image: nginx
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   volumes:
+  #     - <path/to/your/config>:/etc/nginx
+  #     - <path/to/your/certs>:/etc/ssl/private
 
 volumes:
   db:

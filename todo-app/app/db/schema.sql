@@ -10,3 +10,5 @@ CREATE TABLE todos
     done BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
 );
+
+GRANT INSERT, SELECT, DELETE, UPDATE ON database.* TO 'todo_user'@'localhost' IDENTIFIED BY 'root';

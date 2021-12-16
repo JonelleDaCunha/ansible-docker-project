@@ -1,5 +1,6 @@
 ---
 - hosts: virtualmachines 
+  gather_facts: no
   roles: 
-   #- {role: vm-setup} 
+   - common
    - {role: container-setup} 

@@ -6,9 +6,10 @@ if(process.env.JAWSDB_URL) {
 } else {
     connection = mysql.createConnection({
         host: process.env.DB_HOST,
-        user: 'root',
-        password: 'root',
-        database: 'todos_db'
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        port: process.env.DB_PORT
     });
 }
 
@@ -18,6 +19,7 @@ connection.on('connect', () => {
 
 connection.on('error', err => {
     console.log('--> Connection error: ', err);
+    connection.release();
 });
 
 connection.connect();
